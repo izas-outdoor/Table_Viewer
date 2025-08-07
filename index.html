@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Guía de Tallas desde Medidas Corporales</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+    <p id="demo">
+
+    </p>
+    <p id="largo"></p> 
+    <script>
+
+        var jotason="";
+        let myArr;
+        const xmlhttp = new XMLHttpRequest();
+        xmlhttp.onload = function() {
+            
+            var provisional=0;
+            var tallas_reales=0
+            myArr = JSON.parse(this.responseText);
+            let lista_tallas =[];
+            let lista_largo=[];
+
+            check=myArr[1]
+            console.log(check.HOMBROS)
+            if (check.HOMBROS!="undefined"){
+                provisional=2
+            }else if(check.MUSLO!="undefinied"){
+                provisional=1
+            }
+            console.log(provisional)
+            if ((provisional == 1) || (provisional == 2)) {
+                for (t in myArr){
+                    lista_tallas.push(myArr[t].Tallas);
+                }
+            }else{
+
+                for (t in myArr){
+                    lista_tallas.push(myArr[t].SIZE);
+                    lista_largo.push(myArr[t].LARGO);
+                    console.log(lista_tallas[t]);
+                }
+                
+            }
+            console.log(lista_tallas)
+            
+            //Crear las variables y arrays
+            const lista_Hombro =[];
+            var hombro=0;
+            const lista_Pecho =[];
+            var pecho=0;
+            const lista_Cintura =[];
+            var cintura=0;
+            const lista_Cadera =[];
+            var cadera=0;
+            const lista_Manga =[];
+            var manga=0;
+            const lista_Muslo =[];
+            var muslo=0;
+            const lista_Torso =[];
+            var torso=0;
+            const lista_Largo =[];
+            var largo=0;
+            const lista_Pierna =[];
+            var pierna=0;
+            var puntero=0;
+            var contador = 1;
+            for(var r = 0; r < lista_tallas.length;r++){
+                if (provisional ==2){
+                    lista_Hombro.push(myArr[r].HOMBROS);
+                    lista_Pecho.push(myArr[r].PECHO);
+                    lista_Cintura.push(myArr[r].CINTURA);
+                    lista_Manga.push(myArr[r].MANGA);
+                    lista_Torso.push(myArr[r].TOTAL);
+                    
+                    }
+                if (provisional ==1){
+                    lista_Cintura.push(myArr[r].CINTURA);
+                    lista_Cadera.push(myArr[r].CADERA);
+                    lista_Muslo.push(myArr[r].MUSLO);
+                    lista_Largo.push(myArr[r].TOTAL);
+                    
+                    }
+            }
+            console.log(lista_Cintura)
+            //comprobar
+            var tallas_falsas=0
+            for(ta = 0; ta<lista_tallas.length;ta++){
+                for(var r = ta+1; r < lista_tallas.length;r++){
+                    if(lista_tallas[ta]==lista_tallas[r]){
+                        if (provisional ==2){
+                            console.log(lista_tallas[ta])                            
+                            console.log(lista_tallas[r])
+                            lista_Hombro[ta]+=lista_Hombro[r];
+                            lista_Pecho[ta]+=lista_Pecho[r];
+                            lista_Cintura[ta]+=lista_Cintura[r];
+                            lista_Manga[ta]+=lista_Manga[r];
+                            lista_Torso[ta]+=lista_Torso[r];
+                            tallas_falsas+=1
+                                
+                            lista_Hombro.splice(r);
+                            lista_Pecho.splice(r);
+                            lista_Cintura.splice(r);
+                            lista_Manga.splice(r);
+                            lista_Torso.splice(r);
+                            lista_tallas.splice(r)
+                            r=r-1
+
+                            
+                        }
+                        if (provisional ==1){
+
+                            lista_Cintura[ta]+=lista_Cintura[r];
+                            lista_Cadera[ta]+=lista_Cadera[r];
+                            lista_Muslo[ta]+=lista_Muslo[r];
+                            lista_Largo[ta]+=lista_Largo[r];
+                            tallas_falsas+=1
+
+                            lista_Cintura.splice(r);
+                            lista_Cadera.splice(r);
+                            lista_Muslo.splice(r);
+                            lista_Largo.splice(r);
+                            lista_tallas.splice(r)
+                            r=r-1
+
+                            
+                        }
+                            
+                        
+                        contador+=1;
+                            
+                    }
+                    
+
+                }
+                if (provisional ==2){
+
+                    lista_Hombro[ta]=lista_Hombro[ta]/contador;
+                    lista_Pecho[ta]=lista_Pecho[ta]/contador;
+                    lista_Cintura[ta]=lista_Cintura[ta]/contador;                    
+                    lista_Manga[ta]=lista_Manga[ta]/contador;
+                    lista_Torso[ta]=lista_Torso[ta]/contador;
+
+                    }
+                if (provisional ==1){
+
+                    lista_Cintura[ta]=lista_Cintura[ta]/contador;
+                    lista_Cadera[ta]=lista_Cadera[ta]/contador;
+                    lista_Muslo[ta]=lista_Muslo[ta]/contador;
+                    lista_Largo[ta]=lista_Largo[ta]/contador;
+                }
+                contador=1
+            }
+            
+            if(tallas_falsas!=0){tallas_falsas--}
+            tallas_reales=lista_tallas.length-tallas_falsas
+            console.log(lista_Cintura);
+            //medias
+            
+                
+            
+            contador=0;
+            
+            
+
+            
+            //Cosas para crear la tabla y variables necesarias
+            contador=-1;
+            var body = document.getElementsByTagName("body")[0];
+            var tabla = document.createElement("table");
+            var tblBody = document.createElement("tbody");
+            var camisa =["Ancho de Hombro (cm)","Diámetro Pecho (cm)"," Diámetro Cintura (cm)","Largo de manga (cm)", "Largo del Torso", "Talla"];
+            var pantalones =["Largura Total (cm)", "Diámetro cintura (cm)", "Diámetro Cadera (cm)", "Ancho de muslo (cm)", "Talla"];
+            var zapato =["Talla del calzado","Largo del pie (cm)"];
+            while (contador < tallas_reales){
+                var fila = document.createElement("tr");
+                if(contador<0){
+                    //Escribir intros
+                    if(provisional==2){
+                        for(var i = 0; i < camisa.length; i++){
+                            var columna = document.createElement("th");
+                            var textoCelda = document.createTextNode(camisa[i]);
+                            columna.appendChild(textoCelda);
+                            fila.appendChild(columna);
+                        }
+                    }
+                    if(provisional==1){
+                        for(var i = 0; i < pantalones.length; i++){
+                            var columna = document.createElement("th");
+                            var textoCelda = document.createTextNode(pantalones[i]);
+                            columna.appendChild(textoCelda);
+                            fila.appendChild(columna);
+                        }
+                    }
+                    if(provisional==0){
+                        for(var i = 0; i < zapato.length; i++){
+                            var columna = document.createElement("th");
+                            var textoCelda = document.createTextNode(zapato[i]);
+                            columna.appendChild(textoCelda);
+                            fila.appendChild(columna);
+                        }
+                    }
+                    tblBody.appendChild(fila);
+                }else{
+                    //Escribir camiseta
+                    if(provisional==2){
+                        var columna = document.createElement("th");
+                        if((contador<lista_tallas.length -1)&&(lista_Hombro[contador] != lista_Hombro[contador+1])){
+                            var textoCelda = document.createTextNode("De "+lista_Hombro[contador]+" a "+(lista_Hombro[contador+1]));
+                            
+                        }else{
+                            var textoCelda = document.createTextNode("De "+lista_Hombro[contador]+" a "+(lista_Hombro[contador]+3));
+                        }
+
+                    
+                        columna.appendChild(textoCelda);
+                        fila.appendChild(columna);
+                    
+                        var columna = document.createElement("th");
+                        if((contador<lista_tallas.length -1)&&(lista_Pecho[contador] != lista_Pecho[contador+1])){
+                            var textoCelda = document.createTextNode("De "+lista_Pecho[contador]+" a "+(lista_Pecho[contador+1]));
+
+                        }else{
+                            var textoCelda = document.createTextNode("De "+lista_Pecho[contador]+" a "+(lista_Pecho[contador]+3));
+                        }
+
+                    
+                        columna.appendChild(textoCelda);
+                        fila.appendChild(columna);
+                        
+                        var columna = document.createElement("th");
+                        if((contador<lista_tallas.length -1)&&(lista_Cintura[contador] != lista_Cintura[contador+1])){
+                            var textoCelda = document.createTextNode("De "+lista_Cintura[contador]+" a "+(lista_Cintura[contador+1]));
+                            console.log(lista_Cintura);
+                        }else{
+                            var textoCelda = document.createTextNode("De "+lista_Cintura[contador]+" a "+(lista_Cintura[contador]+3));
+                        }
+
+                    
+                        columna.appendChild(textoCelda);
+                        fila.appendChild(columna);
+                        
+                        var columna = document.createElement("th");
+                        if((contador<lista_tallas.length -1)&&(lista_Manga[contador] != lista_Manga[contador+1])){
+                            var textoCelda = document.createTextNode("De "+lista_Manga[contador]+" a "+(lista_Manga[contador+1]));
+
+                        }else{
+                            var textoCelda = document.createTextNode("De "+lista_Manga[contador]+" a "+(lista_Manga[contador]+1));
+                        }
+
+                    
+                        columna.appendChild(textoCelda);
+                        fila.appendChild(columna);
+
+                    
+                        var columna = document.createElement("th");
+                        if((contador<lista_tallas.length -1)&&(lista_Torso[contador] != lista_Torso[contador+1])){
+                            var textoCelda = document.createTextNode("De "+lista_Torso[contador]+" a "+(lista_Torso[contador+1]));
+
+                        }else{
+                            var textoCelda = document.createTextNode("De "+lista_Torso[contador]+" a "+(lista_Torso[contador]+1));
+                        }
+
+                        
+                        columna.appendChild(textoCelda);
+                        fila.appendChild(columna);
+                        var columna = document.createElement("th");
+                        var textoCelda=document.createTextNode(lista_tallas[contador]);
+                        columna.appendChild(textoCelda);
+                        fila.appendChild(columna);
+                    }
+
+                    //escribir pantalón
+                    if(provisional==1){
+                        
+                        var columna = document.createElement("th");
+                        if((contador<lista_tallas.length -1)&&(lista_Cintura[contador] != lista_Cintura[contador+1])){
+                            var textoCelda = document.createTextNode(lista_Cintura[contador]+" cm");
+                            console.log(lista_Cintura);
+                        }else{
+                            var textoCelda = document.createTextNode(lista_Cintura[contador]+" cm");
+                        }
+
+                    
+                        columna.appendChild(textoCelda);
+                        fila.appendChild(columna);
+                    
+                        var columna = document.createElement("th");
+                        if((contador<lista_tallas.length -1)&&(lista_Cadera[contador] != lista_Cadera[contador+1])){
+                            var textoCelda = document.createTextNode("De "+lista_Cadera[contador]+" a "+(lista_Cadera[contador+1]));
+
+                        }else{
+                            var textoCelda = document.createTextNode("De "+lista_Cadera[contador]+" a "+(lista_Cadera[contador]+3));
+                        }
+
+                    
+                        columna.appendChild(textoCelda);
+                        fila.appendChild(columna);
+                        
+                        var columna = document.createElement("th");
+                        if((contador<lista_tallas.length -1)&&(lista_Muslo[contador] != lista_Muslo[contador+1])){
+                            var textoCelda = document.createTextNode("De "+lista_Muslo[contador]+" a "+(lista_Muslo[contador+1]));
+
+                        }else{
+                            var textoCelda = document.createTextNode("De "+lista_Muslo[contador]+" a "+(lista_Muslo[contador]+1));
+                        }
+
+                    
+                        columna.appendChild(textoCelda);
+                        fila.appendChild(columna);
+
+                    
+                        var columna = document.createElement("th");
+                        if((contador<lista_tallas.length -1)&&(lista_Largo[contador] != lista_Largo[contador+1])){
+                            var textoCelda = document.createTextNode("De "+lista_Largo[contador]+" a "+(lista_Largo[contador+1]));
+
+                        }else{
+                            var textoCelda = document.createTextNode("De "+lista_Largo[contador]+" a "+(lista_Largo[contador]+1));
+                        }
+
+                    
+                        columna.appendChild(textoCelda);
+                        fila.appendChild(columna);
+                        var columna = document.createElement("th");
+                        var textoCelda=document.createTextNode(lista_tallas[contador]);
+                        columna.appendChild(textoCelda);
+                        fila.appendChild(columna);
+                    }
+
+                    //Escribir zapato
+                    if(provisional==0){
+                        var columna = document.createElement("th");
+                    
+                        var columna = document.createElement("th");
+                        var textoCelda = document.createTextNode("Talla "+lista_tallas[contador] );                    
+                        columna.appendChild(textoCelda);
+                        fila.appendChild(columna);
+                    
+                        var columna = document.createElement("th");
+                        if(contador<lista_tallas.length -1){
+                            var textoCelda = document.createTextNode("De "+lista_largo[contador]+" a "+(lista_largo[contador+1]));
+
+                        }else{
+                            var textoCelda = document.createTextNode("De "+lista_largo[contador]+" a "+(lista_largo[contador]+0.25));
+                        }
+
+                    
+                        columna.appendChild(textoCelda);
+                        fila.appendChild(columna);
+
+                    }
+
+
+
+                    tblBody.appendChild(fila);
+                }
+                contador+=1;
+                
+        
+            }
+            tabla.appendChild(tblBody);
+            body.appendChild(tabla);
+            tabla.setAttribute("border", "2");
+
+
+
+        }
+        xmlhttp.open("GET", "resultados/"+jotason, true);
+        xmlhttp.send();
+
+        
+        
+    </script>
+</body>
+</html>
